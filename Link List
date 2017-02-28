@@ -1,0 +1,103 @@
+#include <iostream>
+#include <stdio.h>
+#include <cstring>
+using namespace std;
+
+struct NodeType
+{
+    int roll;
+    NodeType *next;
+};
+NodeType *root;
+void append(int roll)
+{
+	if(root==NULL) //If the list is empty
+	{
+		root=new NodeType();
+		root->roll=roll;
+		root->next=NULL;
+	}
+	else
+	{
+		NodeType *current_node=root; //make a copy of root node
+		while(current_node->next!=NULL) //Find the last node
+		{
+			current_node=current_node->next; //go to next address
+		}
+		NodeType *newnode = new NodeType(); //create a new node
+		newnode->roll=roll;
+		newnode->next=NULL;
+
+		current_node->next=newnode; //link the last node with new node
+	}
+}
+
+void print()
+{
+		NodeType *current_node=root;
+		while(current_node!=NULL) //loop until you reach null
+		{
+			printf("%d\n",current_node->roll);
+			current_node=current_node->next;
+		}
+}
+
+void delete_node(int roll)
+{
+	NodeType *current_node=root;
+	NodeType *previous_node=NULL;
+	while(current_node->roll!=roll) //Searching node
+	{
+		previous_node=current_node; //Save the previous node
+		current_node=current_node->next;
+	}
+	if(current_node==root) //Delete root
+	{
+		NodeType *temp=root; //save root in temporary variable
+		root=root->next; //move root forward
+		delete(temp); //free memory
+	}
+	else //delete non-root node
+	{
+		previous_node->next=current_node->next; //previous node points the current node's next node
+		delete(current_node); //free current node
+	}
+
+}
+
+void delete_Full_list()
+{
+	NodeType *current_node=root;
+	NodeType *previous_node=NULL;
+
+	if(root!=NULL){
+        while(current_node!=NULL) //Searching node
+        {
+            previous_node=current_node; //Save the previous node
+            current_node=current_node->next;
+            cout<<previous_node->roll<<endl;
+            delete(previous_node);
+        }
+        root = NULL;
+	}
+}
+
+int main()
+{
+    root=NULL;
+
+    append(1);
+    append(4);
+    append(343);
+    append(199);
+    print();
+    cout<<endl;
+    delete_node(4);
+    print();
+    cout<<endl;
+    delete_Full_list();
+    cout<<"after delete all"<<endl;
+    print();
+
+    return 0;
+}
