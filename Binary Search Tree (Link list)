@@ -1,0 +1,248 @@
+#include <iostream>
+#include <stdio.h>
+#include <cstring>
+using namespace std;
+
+struct node
+{
+	int roll;
+	node *left, *right,*parent;
+	node() //initialize the node using null
+	{
+		left=NULL;
+		right=NULL;
+	}
+};
+
+
+node *root;  /// List Pointer
+void DeleteNode(node*); // protoTyoe
+
+
+void Insert(int roll)
+{
+	if(root==NULL) //first node in tree
+	{
+		root=new node();
+		root->roll=roll;
+		root->parent=NULL;
+	}
+	else
+	{
+		node *current=root,*parent;
+
+		while(current!=NULL)
+		{
+                parent=current;
+				if(roll < current->roll)
+				{
+					current=current->left;
+				}
+				else
+				{
+					current=current->right;
+				}
+		}
+
+		node *newnode=new node();
+		newnode->roll=roll;
+		newnode->parent = parent;
+
+		if( newnode->roll < parent->roll )
+            parent->left = newnode;
+		else
+            parent->right = newnode;
+	}
+}
+
+/// x = tree , k is search element
+int SearchTree(node *x , int k){
+
+    if(x==NULL || k == x->roll)
+        return x->roll;
+    if(k < x->roll)
+        SearchTree(x->left,k);
+    else
+        SearchTree(x->right,k);
+
+}
+/// x is tree
+int Minimum(node *x){
+
+    if(x->left == NULL)
+        return x->roll;
+
+    Minimum(x->left);
+}
+
+int Maximum(node *x){
+
+    if(x->right == NULL)
+        return x->roll;
+
+    Maximum(x->right);
+}
+
+
+///      1
+///     / \
+///    2   3
+void print_preorder(node *current)
+{
+	if(current==NULL) return;
+	cout<<current->roll<<endl;
+
+	print_preorder(current->left);
+	print_preorder(current->right);
+}
+
+
+///      2
+///     / \
+///    1   3
+void print_InOrder(node *current)
+{
+	if(current==NULL) return;
+	
+	print_InOrder(current->left);
+
+	cout<<current->roll<<endl;
+
+	print_InOrder(current->right);
+}
+
+///
+void GetPredecessor_And_Delete(node* tree,int &data)
+{
+    while (tree->right != NULL)
+        tree = tree->right;
+    
+    data = tree->roll;
+    DeleteNode(tree);
+}
+
+
+
+void DeleteNode(node *tree)
+{
+//    cout<<tree->roll<<endl;
+
+    int data;
+    node *tempPtr;
+    tempPtr=tree;
+
+    if(tree->left == NULL && tree->right == NULL && tree->parent==NULL){
+
+        tree=NULL;
+        delete tempPtr;
+
+    }else if(tree->left == NULL && tree->right == NULL && tree->parent!=NULL){
+
+        node *pr = tree->parent;
+
+        if(tree->roll < pr->roll){
+            pr->left=NULL;
+        }else{
+            pr->right=NULL;
+        }
+
+        delete tempPtr;
+
+    }else if (tree->left == NULL && tree->parent==NULL){
+
+        tree = tree->right;
+        tree->parent=NULL;
+        delete tempPtr;
+
+    }else if (tree->left == NULL && tree->parent!=NULL){
+
+        node *pr = tree->parent;
+
+        if(tree->roll < pr->roll){
+            pr->left=tree->right;
+        }else{
+            pr->right=tree->right;
+        }
+        tree = tree->right;
+        tree->parent=pr;
+
+        delete tempPtr;
+
+    }else if (tree->right == NULL && tree->parent==NULL){
+
+        tree = tree->left;
+        tree->parent=NULL;
+
+        delete tempPtr;
+
+    }else if (tree->right == NULL && tree->parent!=NULL){
+
+        node *pr = tree->parent;
+
+        if(tree->roll < pr->roll){
+            pr->left=tree->left;
+        }else{
+            pr->right=tree->left;
+        }
+
+        tree = tree->left;
+        tree->parent=pr;
+
+        delete tempPtr;
+
+    }else{
+
+        GetPredecessor_And_Delete(tree->left,data);
+        tree->roll = data;
+
+    }
+}
+
+//only call this
+void Delete(node *tree,int item)
+{
+    if(item < tree->roll)
+
+        Delete(tree->left, item);
+
+    else if(item > tree->roll)
+
+        Delete(tree->right, item);
+
+    else
+
+        DeleteNode(tree);
+}
+
+
+int main()
+{
+    root=NULL;
+
+    Insert(9);
+    Insert(3);
+    Insert(4);
+    Insert(16);
+    Insert(10);
+    Insert(18);
+    Insert(20);
+    Insert(15);
+    Insert(14);
+    Insert(13);
+    Insert(12);
+//
+//    print_preorder(root);
+//    cout<<endl;
+    print_InOrder(root);
+
+    Delete(root,9);
+    Delete(root,16);
+
+    cout<<"\n\nAfter delete\n";
+
+    print_InOrder(root);
+//    cout<<SearchTree(root,4)<<endl;
+//    cout<<Minimum(root)<<endl;
+//    cout<<Maximum(root)<<endl;
+    return 0;
+}
