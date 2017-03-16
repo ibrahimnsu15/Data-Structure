@@ -1,0 +1,59 @@
+#include <iostream>
+#include <cstdlib>
+#include <set>
+#include <stdio.h>
+#include <fstream>
+#include <map>
+#define input cin
+using namespace std;
+
+
+
+template <class ItemType>
+ItemType Find(ItemType n,map<ItemType,ItemType> &par){
+
+    if(par[n]==n)
+        return n;
+    return par[n] = Find(par[n],par);
+
+}
+
+template <class ItemType>
+void Union(ItemType a,ItemType b,map<ItemType,ItemType> &par){
+
+    ItemType u = Find(a,par);
+    ItemType v = Find(b,par);
+
+    if(u != v){
+        par[u] = v;
+    }
+}
+
+
+int main()
+{
+//    ifstream input("input.txt");
+
+        map<char,char>  par;
+        for ( char i = 'A' ; i <= 'Z' ; i++ ){
+            par[i] = i;
+        }
+
+
+        Union('A','B',par);
+        Union('C','D',par);
+        Union('B','D',par);
+
+
+        cout<< "A C are Friend ?" <<endl;
+        if(Find('A',par) == Find('C',par))
+            cout<< "Yes" <<endl;
+        else
+            cout<< "No" <<endl;
+
+        for ( char i = 'A' ; i <= 'D' ; i++ ){
+            cout<<Find(i,par)<<endl;
+        }
+
+    return 0;
+}
