@@ -1,0 +1,75 @@
+#include <iostream>
+
+using namespace std;
+
+struct NodeType{
+    bool endmark;
+    NodeType* next[27];
+    NodeType(){
+        endmark = false;
+        for ( int i = 0 ; i < 26 ; i++ ){
+            next[i]=NULL;
+        }
+    }
+
+} *root;
+
+
+void Insert(string str, int len){
+    NodeType *curr = root;
+
+    for ( int i = 0 ; i < len ; i++ ){
+        int id = str[i]-'a';
+
+        if(curr->next[id]==NULL)
+            curr->next[id] = new NodeType();
+        curr = curr->next[id];
+    }
+    curr->endmark = true;
+}
+
+bool Search(string str,int len){
+
+    NodeType *curr = root;
+
+    for ( int i = 0 ; i < len ; i++ ){
+        int id = str[i]-'a';
+
+        if(curr->next[id]==NULL)
+            return false;
+        curr = curr->next[id];
+    }
+    return curr->endmark;
+}
+
+void Del(NodeType *curr){
+    for ( int i = 0 ; i < 26 ; i++ ){
+        if(curr->next[i]!=NULL)
+            Del(curr->next[i]);
+    }
+    delete(curr);
+}
+
+int main()
+{
+
+    root = new NodeType();
+
+    Insert("ibrahim",7);
+    Insert("murad",5);
+
+    if(Search("ibr",3))
+        cout<< "found" <<endl;
+    else
+        cout<< "Not found" <<endl;
+
+    if(Search("ibrahim",7))
+        cout<< "found" <<endl;
+
+    if(Search("murad",5))
+        cout<< "found" <<endl;
+
+    Del(root);
+
+    return 0;
+}
