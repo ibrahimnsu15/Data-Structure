@@ -1,0 +1,123 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <map>
+#include <fstream>
+#include <cstring>
+#include <stdio.h>
+#include <stack>
+#include <deque>
+#include <math.h>
+#include <queue>
+#include <stdlib.h>
+
+#define LL          long long
+#define in          cin
+#define out         cout
+#define pb          push_back
+#define ppb         pop_back
+#define PI          acos(-1.0)
+#define mod         1000000007
+#define xx          first
+#define yy          second
+#define mkp         make_pair
+
+#define FOR(I,A,B)  for(int I = (A); I < (B); ++I)
+#define REP(I,N)    FOR(I,0,N)
+#define ALL(A)      ((A).begin(), (A).end())
+#define s(a)        scanf("%d",&a);
+#define p(a)        printf("%d",a);
+#define pln         printf("\n");
+#define max         1000001
+
+using namespace std;
+
+int tree[max];
+int arr[max];
+void Initialize(int node,int Start,int End){
+    if(Start == End){
+        tree[node] = arr[Start-1];
+        return;
+    }
+
+    int mid = (Start+End)/2;
+    int left = node*2;
+    int right = node*2+1;
+
+    Initialize(left,Start,mid);
+    Initialize(right,mid+1,End);
+
+    tree[node] = tree[left]+tree[right];
+}
+
+int Query(int node,int start,int End,int i,int j){
+    if(start >= i && End <= j){
+        return tree[node];
+    }
+
+    if(start > j || End  < i){
+        return 0;
+    }
+    cout<< start<<" "<<End <<endl;
+    int mid = (start+End)/2;
+    int left = node*2;
+    int right = node*2+1;
+
+    int LeftQuery = Query(left,start,mid,i,j);
+    int RightQuery = Query(right,mid+1,End,i,j);
+
+
+
+    return LeftQuery+RightQuery;
+}
+
+
+void update(int node,int index,int NewValue,int start,int End){
+
+    if(start > index || End < index){
+        return;
+    }
+
+    if(start== index && End == index){
+        tree[node]=NewValue;
+        return;
+    }
+
+    int mid = (start+End)/2;
+    int left = node*2;
+    int right = node*2+1;
+
+    update(left,index,NewValue,start,mid);
+    update(right,index,NewValue,mid+1,End);
+    tree[node] = tree[left] + tree[right];
+
+}
+
+
+
+int main()
+{
+//    ifstream in("input.txt");
+//    ofstream out("output.txt");
+//
+
+    arr[0]=4;
+    arr[1]=-9;
+    arr[2]=3;
+    arr[3]=7;
+    arr[4]=1;
+    arr[5]=0;
+    arr[6]=2;
+
+    Initialize(1,1,7);
+
+    while(1<2){
+        int a,b;
+        s(a)
+        s(b)
+
+        cout<< Query(1,1,7,a,b) <<endl;
+    }
+
+    return 0;
+}
